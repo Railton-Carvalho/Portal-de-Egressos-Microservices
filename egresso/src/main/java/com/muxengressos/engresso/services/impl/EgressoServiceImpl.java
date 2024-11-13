@@ -13,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class EgressoServiceImpl implements EgressoService {
 
@@ -35,5 +37,30 @@ public class EgressoServiceImpl implements EgressoService {
     @Override
     public ApiResponse updateEgresso(RequestEgressoDto requestEgressoDto) {
         return null;
+    }
+
+    @Override
+    public boolean existsByCpf(String cpf) {
+        return false;
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return false;
+    }
+
+    @Override
+    public Egresso save(Egresso egresso) {
+        return egressoRepository.save(egresso);
+    }
+
+    @Override
+    public Optional<Egresso> findById(Integer id) {
+        return Optional.empty();
+    }
+
+    @Override
+    public void updateEgresso(Egresso egresso, RequestEgressoDto requestEgressoDto) {
+
     }
 }

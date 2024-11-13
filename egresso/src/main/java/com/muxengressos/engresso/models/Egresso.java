@@ -4,14 +4,16 @@ package com.muxengressos.engresso.models;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
 @Data
-@Table("tb_egresso")
+@Table(name = "tb_egresso")
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@EqualsAndHashCode(of = "id")
 public class Egresso implements Serializable {
 
     @Id
