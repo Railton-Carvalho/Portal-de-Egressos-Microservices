@@ -1,0 +1,18 @@
+#FROM eclipse-temurin:17-jdk-alpine
+
+#WORKDIR /app
+
+#COPY target/egresso-0.0.1-SNAPSHOT.jar /app/egresso.jar
+
+#EXPOSE 8087
+
+## Execute a aplicação
+#ENTRYPOINT ["java", "-jar", "/app/egresso.jar"]
+
+FROM eclipse-temurin:17-jdk-alpine
+
+COPY target/egresso-0.0.1-SNAPSHOT.war egresso.war
+
+ENTRYPOINT ["java", "-jar", "/manintcg_api.war"]
+
+EXPOSE 8080
