@@ -13,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 
 @Service
@@ -61,6 +63,21 @@ public class EgressoServiceImpl implements EgressoService {
 
     @Override
     public void updateEgresso(Egresso egresso, RequestEgressoDto requestEgressoDto) {
+        BeanUtils.copyProperties(egresso, requestEgressoDto);
 
+        egresso.setUpdate_at(LocalDateTime.now(ZoneId.of("UTC")));
+
+        egressoRepository.save(egresso);
+
+    }
+
+    @Override
+    public Page<Egresso> findAll(Pageable pageable) {
+        return egressoRepository.findAll(pageable);
+    }
+
+    @Override
+    public boolean existsById(Integer id) {
+        return false;
     }
 }
