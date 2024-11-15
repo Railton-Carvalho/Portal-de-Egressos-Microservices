@@ -6,9 +6,12 @@ import com.muxengressos.engresso.models.ApiResponse;
 import com.muxengressos.engresso.models.Egresso;
 import com.muxengressos.engresso.models.dtos.RequestEgressoDto;
 import com.muxengressos.engresso.services.EgressoService;
+import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,12 +27,15 @@ public class EgressoController {
     @Autowired
     private EgressoService egressoService;
 
+    private ModelMapper modelMappper;
+
 
     @GetMapping
-    public ResponseEntity<Page<RequestEgressoDto>> getAllEgresso(){
+    public ResponseEntity<Page<RequestEgressoDto>> getAllEgresso(Pageable pageable){
 
+        var egressolist = egressoService.findAll(pageable).map(egresso -> modelMappper.map(egresso, RequestEgressoDto.class));
 
-        return null;
+        return ResponseEntity.ok().body(egressolist);
     }
 
 
@@ -37,12 +43,13 @@ public class EgressoController {
     public ResponseEntity<Object> registrerEgresso(@RequestBody
                                                             @JsonView(RequestEgressoDto.EgressoView.RegistrationPost.class) RequestEgressoDto requestEgressoDto){
 
-        if (egressoService.existsByCpf(requestEgressoDto.getCpf())){
+        if (!egressoService.existsByCpf(requestEgressoDto.getCpf())){
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse(false, "CPF já cadastrado !!!"));
         }
-        if (egressoService.existsByEmail(requestEgressoDto.getEmail())){
+        if (!egressoService.existsByEmail(requestEgressoDto.getEmail())){
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse(false, "Email fornecido já cadastrado !!!"));
         }
+
         var egresso = new Egresso();
         BeanUtils.copyProperties(requestEgressoDto, egresso);
         egresso.setCreated_at(LocalDateTime.now(ZoneId.of("UTC")));
@@ -53,6 +60,7 @@ public class EgressoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(egresso);
     }
 
+    @Transactional
     @PutMapping
     public ResponseEntity<Object> updateEgresso(@RequestBody @JsonView(RequestEgressoDto.EgressoView.EgressoUpdate.class) RequestEgressoDto requestEgressoDto){
 
@@ -63,5 +71,17 @@ public class EgressoController {
         egressoService.updateEgresso(egressoOptional.get(), requestEgressoDto);
 
         return ResponseEntity.ok().body(new ApiResponse(true, "id: "+requestEgressoDto.getId()+"- Egresso Atualizado !"));
+    }
+
+    @Transactional
+    @PatchMapping("/updatepass")
+    public ResponseEntity<ApiResponse> updatePassword(@RequestBody @JsonView(RequestEgressoDto.EgressoView.PasswordUpdate.class) RequestEgressoDto requestEgressoDto){
+
+        if (!egressoService.existsById(requestEgressoDto.getId())){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse(false, "ID não encontrado"));
+        }
+
+        return ResponseEntity.ok().body(new ApiResponse(true, "Senha atualizada"));
+
     }
 }
