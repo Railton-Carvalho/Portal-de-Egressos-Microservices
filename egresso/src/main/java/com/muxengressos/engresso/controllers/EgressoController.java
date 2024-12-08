@@ -23,6 +23,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Optional;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @RestController
 @RequestMapping("v1/egresso")
 public class EgressoController {
@@ -34,13 +37,29 @@ public class EgressoController {
 
 
     @GetMapping
-    public ResponseEntity<Page<RequestEgressoDto>> getAllEgresso(
+    public ResponseEntity<Page<Egresso>> getAllEgresso(
             SpecificationTemplate.EgressoSpec spec,
             @PageableDefault(size = 10, sort = "id")  Pageable pageable){
 
-        var egressolist = egressoService.findAll(spec, pageable).map(egresso -> modelMappper.map(egresso, RequestEgressoDto.class));
+        var egressolist = egressoService.findAll(spec, pageable);
 
+        if (!egressolist.isEmpty()) {
+            for (Egresso egresso: egressolist.toList()){
+                egresso.add(linkTo(methodOn(EgressoController.class).getEgressoByCpf(egresso.getCpf())).withSelfRel());
+            }
+        }
+        //return ResponseEntity.ok().body(egressolist.map(egresso -> modelMappper.map(egresso, RequestEgressoDto.class)));
         return ResponseEntity.ok().body(egressolist);
+    }
+
+    @GetMapping("{cpf}")
+    public ResponseEntity<Object> getEgressoByCpf(@PathVariable(value = "cpf") String cpf){
+        var egresso = egressoService.getEgressoByCpf(cpf);
+
+        if (!egresso.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cpf not found. ");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(egresso.get());
     }
 
 

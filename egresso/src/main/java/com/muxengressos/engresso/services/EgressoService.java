@@ -14,7 +14,7 @@ public interface EgressoService {
 
     Page<RequestEgressoDto> getAllEgresso(Pageable pageable);
 
-    RequestEgressoDto getEgressoByCpf(String cpf);
+    Optional<Egresso> getEgressoByCpf(String cpf);
 
     ApiResponse updateEgresso(RequestEgressoDto requestEgressoDto);
 

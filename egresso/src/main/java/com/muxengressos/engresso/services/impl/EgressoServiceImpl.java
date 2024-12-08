@@ -33,8 +33,9 @@ public class EgressoServiceImpl implements EgressoService {
     }
 
     @Override
-    public RequestEgressoDto getEgressoByCpf(String cpf) {
-        return modelMapper.map(egressoRepository.findByCpf(cpf), RequestEgressoDto.class);
+    public Optional<Egresso> getEgressoByCpf(String cpf) {
+        //return modelMapper.map(egressoRepository.findByCpf(cpf), RequestEgressoDto.class);
+        return egressoRepository.findByCpf(cpf);
     }
 
     @Override
