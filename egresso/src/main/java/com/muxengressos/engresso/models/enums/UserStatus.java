@@ -1,4 +1,6 @@
 package com.muxengressos.engresso.models.enums;
 
-public class UserStatus {
+public enum UserStatus {
+    ACTIVE,
+    BLOCKED;
 }

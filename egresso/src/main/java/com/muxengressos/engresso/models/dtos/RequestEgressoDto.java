@@ -3,14 +3,17 @@ package com.muxengressos.engresso.models.dtos;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.muxengressos.engresso.models.enums.UserStatus;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RequestEgressoDto implements Serializable {
 
@@ -34,6 +37,8 @@ public class RequestEgressoDto implements Serializable {
     @NotBlank(groups = {EgressoView.RegistrationPost.class, EgressoView.EgressoUpdate.class})
     @JsonView({EgressoView.RegistrationPost.class, EgressoView.EgressoUpdate.class})
     private String email;
+
+    private UserStatus status;
 
     @NotBlank(groups = {EgressoView.RegistrationPost.class, EgressoView.PasswordUpdate.class})
     @JsonView({EgressoView.RegistrationPost.class, EgressoView.PasswordUpdate.class})
