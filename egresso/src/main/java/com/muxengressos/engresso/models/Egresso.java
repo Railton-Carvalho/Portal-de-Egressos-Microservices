@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -38,7 +39,7 @@ public class Egresso implements Serializable {
     private String cpf;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "userstatus", nullable = false)
+    @Column(name = "user_status", nullable = false)
     private UserStatus userStatus;
 
     @Column(nullable = false)

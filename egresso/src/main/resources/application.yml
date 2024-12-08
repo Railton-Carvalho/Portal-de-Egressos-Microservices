@@ -1,7 +1,6 @@
 
 server:
   port: 8087
-
 spring:
   datasource:
     url:  jdbc:postgresql://localhost:5433/portalegressodb
@@ -9,8 +8,10 @@ spring:
     password: postgres
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
       default_schema: egresso
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
       jdbc:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         lob.non-contextual-creation: true

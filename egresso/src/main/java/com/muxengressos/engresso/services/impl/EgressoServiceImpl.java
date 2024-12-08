@@ -11,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,7 +24,7 @@ public class EgressoServiceImpl implements EgressoService {
     @Autowired
     private EgressoRepository egressoRepository;
 
-    private ModelMapper modelMapper;
+    private ModelMapper modelMapper =new ModelMapper();
 
 
     @Override
@@ -42,13 +43,11 @@ public class EgressoServiceImpl implements EgressoService {
     }
 
     @Override
-    public boolean existsByCpf(String cpf) {
-        return false;
-    }
+    public boolean existsByCpf(String cpf) {return egressoRepository.existsByCpf(cpf);}
 
     @Override
     public boolean existsByEmail(String email) {
-        return false;
+        return egressoRepository.existsByEmail(email);
     }
 
     @Override
@@ -65,15 +64,15 @@ public class EgressoServiceImpl implements EgressoService {
     public void updateEgresso(Egresso egresso, RequestEgressoDto requestEgressoDto) {
         BeanUtils.copyProperties(egresso, requestEgressoDto);
 
-        egresso.setUpdate_at(LocalDateTime.now(ZoneId.of("UTC")));
+        egresso.setUpdatedAt(LocalDateTime.now(ZoneId.of("UTC")));
 
         egressoRepository.save(egresso);
 
     }
 
     @Override
-    public Page<Egresso> findAll(Pageable pageable) {
-        return egressoRepository.findAll(pageable);
+    public Page<Egresso> findAll(Specification<Egresso> spec, Pageable pageable) {
+        return egressoRepository.findAll(spec, pageable);
     }
 
     @Override
